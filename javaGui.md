@@ -305,7 +305,7 @@ public class Calculator extends JFrame {
 
 ```
 
-##4 KeyEvents
+## 4 KeyEvents
 
 ```java
 
