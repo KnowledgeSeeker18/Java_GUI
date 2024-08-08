@@ -2,10 +2,9 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-public class SumGui extends JFrame {
-    JTextField jt1,jt2;
-    SumGui(){
-        setTitle("SUM OF N NUMBERS");
+public class MouseEventEx extends JFrame {
+    MouseEventEx(){
+        setTitle("MouseEvents ex");
         setSize(500, 250);
         setLayout(new FlowLayout());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -13,14 +12,9 @@ public class SumGui extends JFrame {
         setVisible(true);
     }
     void createContents(){
-        add(new JLabel("enTER THE NUMBER:"));
-        add(jt1=new JTextField(5));
-        add(new JLabel("RESULT: "));
-        add(jt2=new JTextField(10));
-        jt2.setEditable(false);
         JButton jbListener,jbAdapter;
        
-        add(jbListener=new JButton("Calculate"));
+        add(jbListener=new JButton("Mouse Listner"));
         jbListener.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked (MouseEvent me){
@@ -47,7 +41,7 @@ public class SumGui extends JFrame {
 
         });
 
-        add (jbAdapter=new JButton("Calculate (A)"));
+        add (jbAdapter=new JButton("Mouse Adapter"));
         jbAdapter.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent me){
@@ -69,26 +63,9 @@ public class SumGui extends JFrame {
             public void mouseMoved(MouseEvent e) {
                 System.out.println("Mouse moved at: (" + e.getX() + ", " + e.getY() + ")");
             }
-        });
-
-        jbListener.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent ae){
-            try
-            { String input=jt1.getText();
-                int n= Integer.parseInt(input);
-                if (n<0){
-                    jt2.setText("Provide Positive Integer");
-                }
-                int result=(n*(n+1))/2;
-                jt2.setText(String.valueOf(result));
-            }
-            catch (NumberFormatException e){
-                System.out.println(e.getMessage());
-            }
-        }
-        });        
+        });       
     }
     public static void main(String[] args) {
-        new SumGui();
+        new MouseEventEx();
     }
 }
