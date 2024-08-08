@@ -1,111 +1,96 @@
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 
-public class Calculator extends JFrame {
-    JTextField display;
-    StringBuilder input;
-    
-    public Calculator() {
-        setTitle("Calaulator");
-        setSize(300, 400);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        createContents();
-        setVisible(true);
-    }
-    void createContents(){
-        input=new StringBuilder();
-        display=new JTextField();
-        display.setFont(new Font("Arial", Font.PLAIN, 20));
-        display.setHorizontalAlignment(JTextField.RIGHT);
-        display.setEditable(false);
-        
-        setLayout(new BorderLayout());
-        add(display, BorderLayout.NORTH);
-        
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(4,4,5,5));
-        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10,10));
+public class Calculator extends JFrame implements ActionListener {
 
-        String[] buttons={
-            "7", "8", "9", "/",
-            "4", "5", "6", "*",
-            "1", "2", "3", "-",
-            "c", "0", "=", "+"
+    private JTextField display;
+    private String operator;
+    private double num1, num2, result;
+
+    public Calculator() {
+        // Create the display field
+        display = new JTextField();
+        display.setEditable(false);
+        display.setHorizontalAlignment(JTextField.RIGHT);
+
+        // Create a panel for the buttons and set grid layout
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(4, 4, 5, 5));
+
+        // Button labels
+        String[] buttonLabels = {
+            "7", "8", "9", "+",
+            "4", "5", "6", "-",
+            "1", "2", "3", "*",
+            "C", "0", "=", "%"
         };
-        for (String numOp:buttons){
-            JButton button =new JButton(numOp);
-            button.setPreferredSize(new Dimension(60,60));
-            button.setBackground(new Color(200,200,200));
-            button.setFont(new Font("Arial",Font.PLAIN,20));
-            button.addActionListener(new MyListner());
+
+        // Add buttons to the panel
+        for (String label : buttonLabels) {
+            JButton button = new JButton(label);
+            button.addActionListener(this);
             panel.add(button);
         }
-        add(panel,BorderLayout.CENTER);
-    
-    }
-    private class MyListner implements ActionListener{
-        public void actionPerformed(ActionEvent ae){
-            String command=ae.getActionCommand();
-            if(command.equals("c")){
-                display.setText("0");
-                input=new StringBuilder();
-            }
-            else if (!command.equals("=")){
-            input.append(command);
-            display.setText(input.toString());
-            }
-            else{
-                try {
-                    double result = evaluateExpression(input.toString());
-                    display.setText(String.valueOf(result));
-                    input = new StringBuilder();  // Clear the input after evaluation
-                } 
-                catch (Exception e) {
-                    display.setText("Error");
-                    input = new StringBuilder();  // Clear input in case of error
-                }
-            }
-        }       
-        private double evaluateExpression(String expression) {
-            String[] tokens = expression.split("(?=[-+*/])|(?<=[^-+*/][-+*/])");
-            double result = 0;
-            char operator = '-';
-            if (tokens.length > 0) {
-                result = Double.parseDouble(tokens[0]);
-                for (int i = 1; i < tokens.length; i += 2) {
-                    operator = tokens[i].charAt(0);
-                    double number = Double.parseDouble(tokens[i + 1]);
-                    switch (operator) {
-                        case '+':
-                            result += number;
-                            break;
-                        case '-':
-                            result -= number;
-                            break;
-                        case '*':
-                            result *= number;
-                            break;
-                        case '/':
-                            if (number != 0) {
-                                result /= number;
-                            } 
-                            else {
-                            throw new ArithmeticException("Division by zero");
-                            }
-                            break;
-                        }
-                    }
-                }
-                
-                return result;
-            }
-        }
-                
-        public static void main(String[] args) {
-            new Calculator();
-         }
+
+        // Add components to the frame
+        setLayout(new BorderLayout());
+        add(display, BorderLayout.NORTH);
+        add(panel, BorderLayout.CENTER);
+
+        // Frame settings
+        setTitle("Simple Calculator");
+        setSize(300, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        if (command.charAt(0) == 'C') {
+            // Clear the display
+            display.setText("");
+            num1 = num2 = result = 0;
+            operator = "";
+        } else if (command.charAt(0) == '=') {
+            // Perform the calculation
+            num2 = Double.parseDouble(display.getText());
+
+            switch (operator) {
+                case "+":
+                    result = num1 + num2;
+                    break;
+                case "-":
+                    result = num1 - num2;
+                    break;
+                case "*":
+                    result = num1 * num2;
+                    break;
+                case "%":
+                    result = num1 % num2;
+                    break;
+            }
+
+            display.setText(String.valueOf(result));
+            operator = "";
+        } else if ("+-*%".contains(command)) {
+            // Store the operator and first number
+            operator = command;
+            num1 = Double.parseDouble(display.getText());
+            display.setText("");
+        } else {
+            // Append digit to the display
+            display.setText(display.getText() + command);
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            Calculator calculator = new Calculator();
+            calculator.setVisible(true);
+        });
+    }
+}
