@@ -270,14 +270,7 @@ public class Calculator extends JFrame {
                 result = Double.parseDouble(tokens[0]);
                 for (int i = 1; i < tokens.length; i += 2) {
                     operator = tokens[i].charAt(0);
-                    double number = Double.parseDouble(tokens[i + 1]); 
-
-                                // ( 10-2*3
-                                //Initialize result with 10.
-                                // Apply - 2 to 10.
-                                // Apply * 3 to 8.
-                                // Result: 8.0 (Multiplication is applied after subtraction))
-                
+                    double number = Double.parseDouble(tokens[i + 1]);
                     switch (operator) {
                         case '+':
                             result += number;
